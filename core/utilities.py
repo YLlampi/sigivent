@@ -61,4 +61,5 @@ def insert_sale():
         print(i)
 
 
+insert_products()
 insert_sale()

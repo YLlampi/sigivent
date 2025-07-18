@@ -1,4 +1,4 @@
-from django.db.models import Sum, DecimalField
+from django.db.models import Sum, FloatField
 from django.db.models.functions import Coalesce
 from django.http import JsonResponse
 from django.urls import reverse_lazy
@@ -33,9 +33,9 @@ class ReportSaleView(FormView):
                         f'{s.total:.2f}',
                     ])
 
-                subtotal = search.aggregate(r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
-                iva = search.aggregate(r=Coalesce(Sum('iva'), 0, output_field=DecimalField())).get('r')
-                total = search.aggregate(r=Coalesce(Sum('total'), 0, output_field=DecimalField())).get('r')
+                subtotal = search.aggregate(r=Coalesce(Sum('subtotal'), 0, output_field=FloatField())).get('r')
+                iva = search.aggregate(r=Coalesce(Sum('iva'), 0, output_field=FloatField())).get('r')
+                total = search.aggregate(r=Coalesce(Sum('total'), 0, output_field=FloatField())).get('r')
 
                 data.append([
                     '---',

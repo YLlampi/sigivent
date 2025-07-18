@@ -41,7 +41,7 @@ class Product(models.Model):
         item['full_name'] = self.__str__()
         item['category'] = self.category.toJSON()
         item['image'] = self.get_image()
-        item['pvp'] =f'{self.pvp:.2f}'
+        item['pvp'] = f'{self.pvp:.2f}'
         return item
 
     def get_image(self):
