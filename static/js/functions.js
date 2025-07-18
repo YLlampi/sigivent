@@ -51,26 +51,25 @@ function submit_with_ajax(url, title, content, parameters, callback) {
                 btnClass: 'btn-primary',
                 action: function () {
                     $.ajax({
-                        url: url, //window.location.pathname
-                        type: 'POST',
+                        url: url,
                         data: parameters,
+                        type: 'POST',
                         dataType: 'json',
-                        processData: false,
-                        contentType: false,
                         headers: {
                             'X-CSRFToken': csrftoken
+                        },
+                        processData: false,
+                        contentType: false,
+                        success: function (request) {
+                            if (!request.hasOwnProperty('error')) {
+                                callback(request);
+                                return false;
+                            }
+                            message_error(request.error);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            message_error(errorThrown + ' ' + textStatus);
                         }
-                    }).done(function (data) {
-                        console.log(data);
-                        if (!data.hasOwnProperty('error')) {
-                            callback(data);
-                            return false;
-                        }
-                        message_error(data.error);
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(textStatus + ': ' + errorThrown);
-                    }).always(function (data) {
-
                     });
                 }
             },

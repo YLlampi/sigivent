@@ -37,11 +37,11 @@ var sale = {
                 {"data": "total"},
                 {"data": "id"},
             ],
+            order: [[0, "desc"], [2, "desc"]],
             columnDefs: [
                 {
                     targets: [0],
                     class: 'text-center',
-                    orderable: false,
                     render: function (data, type, row) {
                         return '<a class="badge badge-secondary badge-pill pointer" rel="number">' + data + '</a>'
                     }
@@ -49,7 +49,6 @@ var sale = {
                 {
                     targets: [-2, -3, -4, -5],
                     class: 'text-center',
-                    orderable: false,
                     render: function (data, type, row) {
                         return '$' + parseFloat(data).toFixed(2);
                     }
