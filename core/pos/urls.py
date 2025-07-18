@@ -1,6 +1,7 @@
 from django.urls import path
 from core.pos.views.category.views import *
 from core.pos.views.client.views import *
+from core.pos.views.company.views import CompanyUpdateView
 from core.pos.views.dashboard.views import *
 from core.pos.views.product.views import *
 from core.pos.views.sale.views import *
@@ -29,4 +30,6 @@ urlpatterns = [
     path('sale/delete/<int:pk>/', SaleDeleteView.as_view(), name='sale_delete'),
     path('sale/update/<int:pk>/', SaleUpdateView.as_view(), name='sale_update'),
     path('sale/invoice/pdf/<int:pk>/', SaleInvoicePdfView.as_view(), name='sale_invoice_pdf'),
+    # company
+    path('company/update/', CompanyUpdateView.as_view(), name='company_update'),
 ]

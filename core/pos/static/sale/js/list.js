@@ -119,6 +119,7 @@ $(function () {
     });
 
     $('#data tbody')
+        .off()
         .on('click', 'a[rel="details"]', function () {
             var tr = tblSale.cell($(this).closest('td, li')).index();
             var data = tblSale.row(tr.row).data();

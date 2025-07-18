@@ -8,6 +8,8 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
+from core.pos.models import Company
+
 
 class IsSuperuserMixin(object):
     def dispatch(self, request, *args, **kwargs):
@@ -53,3 +55,11 @@ class ValidatePermissionRequiredMixin(object):
             return super().get(request, *args, **kwargs)
         messages.error(request, 'No tiene permiso para ingresar a este módulo')
         return HttpResponseRedirect(self.get_url_redirect())
+
+
+class ExistsCompanyMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if Company.objects.all().exists():
+            return super().dispatch(request, *args, **kwargs)
+        messages.error(request, 'No se puede facturar si no esta registrada la compañia')
+        return redirect('dashboard')

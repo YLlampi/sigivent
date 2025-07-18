@@ -47,13 +47,14 @@
 </head>
 <body>
 <div class="container-fluid">
-    <img alt="" src="{% static 'img/logo.png' %}" class="img-fluid d-block mx-auto img-logo">
-    <h1 class="name-company">{{ company.name }}</h1>
+    <img alt="" src=" {{ sale.company.get_image }}" class="img-fluid d-block mx-auto img-logo">
+    <h1 class="name-company">{{ sale.company.name }}</h1>
     <p class="text-center">
-        Cdla. Dager, Calle Rio Zamora entre Av.Tumbes y Av. Tarqui<br>
-        Celular: +593 0979014551<br>
-        Teléfono: 297541221<br>
-        Web: algorisoft.com<br>
+        {{ sale.company.ruc }}<br>
+        {{ sale.company.address }}<br>
+        Celular: {{ sale.company.mobile }}<br>
+        Teléfono: {{ sale.company.phone }}<br>
+        Web: {{ sale.company.website }}<br>
     </p>
     <p>
         <b>Número:</b> {{ sale.get_number }}<br>

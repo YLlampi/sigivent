@@ -31,22 +31,30 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # libs
-    'widget_tweaks',
-    # apps
+]
+
+LOCAL_APPS = [
     'core.login',
-    'core.pos',
     'core.reports',
     'core.user',
     'core.homepage',
+    'core.pos',
 ]
+
+THIRD_PARTY_APPS = [
+    'widget_tweaks',
+    'rest_framework',
+    'rest_framework.authtoken',
+]
+
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,7 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'crum.CurrentRequestUserMiddleware'
+    'crum.CurrentRequestUserMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -115,7 +123,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-# django
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.0.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -144,14 +153,25 @@ AUTH_USER_MODEL = 'user.User'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
-# Email
+# Email configuration
 
 EMAIL_HOST = 'smtp.gmail.com'
-
 EMAIL_PORT = 587
-
 EMAIL_HOST_USER = 'djangologin99@gmail.com'
-
 EMAIL_HOST_PASSWORD = '0m4gATi3rr@'
 
+# django rest framework
+
+REST_FRAMEWORK = {
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE': 5,
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ]
+}
+
+# System settings
+
 DOMAIN = ''
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None

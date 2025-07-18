@@ -13,12 +13,12 @@ from django.views.generic import CreateView, FormView, DeleteView, UpdateView, V
 from weasyprint import HTML, CSS
 
 from core.pos.forms import SaleForm, ClientForm
-from core.pos.mixins import ValidatePermissionRequiredMixin
+from core.pos.mixins import ValidatePermissionRequiredMixin, ExistsCompanyMixin
 from core.pos.models import Sale, Product, SaleProduct, Client
 from core.reports.forms import ReportForm
 
 
-class SaleListView(ValidatePermissionRequiredMixin, FormView):
+class SaleListView(ExistsCompanyMixin, ValidatePermissionRequiredMixin, FormView):
     form_class = ReportForm
     template_name = 'sale/list.html'
     permission_required = 'view_sale'
@@ -55,13 +55,13 @@ class SaleListView(ValidatePermissionRequiredMixin, FormView):
         return context
 
 
-class SaleCreateView(ValidatePermissionRequiredMixin, CreateView):
+class SaleCreateView(ExistsCompanyMixin, ValidatePermissionRequiredMixin, CreateView):
     model = Sale
     form_class = SaleForm
     template_name = 'sale/create.html'
     success_url = reverse_lazy('sale_list')
-    permission_required = 'add_sale'
     url_redirect = success_url
+    permission_required = 'add_sale'
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -71,7 +71,7 @@ class SaleCreateView(ValidatePermissionRequiredMixin, CreateView):
                 data = []
                 ids_exclude = json.loads(request.POST['ids'])
                 term = request.POST['term'].strip()
-                products = Product.objects.filter(stock__gt=0)
+                products = Product.objects.filter(Q(stock__gt=0) | Q(is_inventoried=False))
                 if len(term):
                     products = products.filter(name__icontains=term)
                 for i in products.exclude(id__in=ids_exclude)[0:10]:
@@ -83,7 +83,7 @@ class SaleCreateView(ValidatePermissionRequiredMixin, CreateView):
                 ids_exclude = json.loads(request.POST['ids'])
                 term = request.POST['term'].strip()
                 data.append({'id': term, 'text': term})
-                products = Product.objects.filter(name__icontains=term, stock__gt=0)
+                products = Product.objects.filter(name__icontains=term).filter(Q(stock__gt=0) | Q(is_inventoried=False))
                 for i in products.exclude(id__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['text'] = i.__str__()
@@ -104,8 +104,9 @@ class SaleCreateView(ValidatePermissionRequiredMixin, CreateView):
                         detail.price = float(i['pvp'])
                         detail.subtotal = detail.cant * detail.price
                         detail.save()
-                        detail.product.stock -= detail.cant
-                        detail.product.save()
+                        if detail.product.is_inventoried:
+                            detail.product.stock -= detail.cant
+                            detail.product.save()
                     sale.calculate_invoice()
                     data = {'id': sale.id}
             elif action == 'search_client':
@@ -138,13 +139,13 @@ class SaleCreateView(ValidatePermissionRequiredMixin, CreateView):
         return context
 
 
-class SaleUpdateView(ValidatePermissionRequiredMixin, UpdateView):
+class SaleUpdateView(ExistsCompanyMixin, ValidatePermissionRequiredMixin, UpdateView):
     model = Sale
     form_class = SaleForm
     template_name = 'sale/create.html'
     success_url = reverse_lazy('sale_list')
-    permission_required = 'change_sale'
     url_redirect = success_url
+    permission_required = 'change_sale'
 
     def get_form(self, form_class=None):
         instance = self.get_object()
@@ -169,20 +170,19 @@ class SaleUpdateView(ValidatePermissionRequiredMixin, UpdateView):
                 data = []
                 ids_exclude = json.loads(request.POST['ids'])
                 term = request.POST['term'].strip()
-                products = Product.objects.filter(stock__gt=0)
+                products = Product.objects.filter(Q(stock__gt=0) | Q(is_inventoried=False))
                 if len(term):
                     products = products.filter(name__icontains=term)
                 for i in products.exclude(id__in=ids_exclude)[0:10]:
                     item = i.toJSON()
-                    item['value'] = i.name
-                    # item['text'] = i.name
+                    item['value'] = i.__str__()
                     data.append(item)
             elif action == 'search_products_select2':
                 data = []
                 ids_exclude = json.loads(request.POST['ids'])
                 term = request.POST['term'].strip()
                 data.append({'id': term, 'text': term})
-                products = Product.objects.filter(name__icontains=term, stock__gt=0)
+                products = Product.objects.filter(name__icontains=term).filter(Q(stock__gt=0) | Q(is_inventoried=False))
                 for i in products.exclude(id__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['text'] = i.__str__()
@@ -205,8 +205,9 @@ class SaleUpdateView(ValidatePermissionRequiredMixin, UpdateView):
                             detail.price = float(i['pvp'])
                             detail.subtotal = detail.cant * detail.price
                             detail.save()
-                            detail.product.stock -= detail.cant
-                            detail.product.save()
+                            if detail.product.is_inventoried:
+                                detail.product.stock -= detail.cant
+                                detail.product.save()
                         sale.calculate_invoice()
                         data = {'id': sale.id}
                     data = {'id': sale.id}
@@ -240,12 +241,12 @@ class SaleUpdateView(ValidatePermissionRequiredMixin, UpdateView):
         return context
 
 
-class SaleDeleteView(ValidatePermissionRequiredMixin, DeleteView):
+class SaleDeleteView(ExistsCompanyMixin, ValidatePermissionRequiredMixin, DeleteView):
     model = Sale
     template_name = 'sale/delete.html'
     success_url = reverse_lazy('sale_list')
-    permission_required = 'delete_sale'
     url_redirect = success_url
+    permission_required = 'delete_sale'
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -274,7 +275,6 @@ class SaleInvoicePdfView(LoginRequiredMixin, View):
             template = get_template('sale/invoice.html')
             context = {
                 'sale': Sale.objects.get(pk=self.kwargs['pk']),
-                'comp': {'name': 'ALGORISOFT S.A.', 'ruc': '9999999999999', 'address': 'Milagro, Ecuador'},
                 'icon': f'{settings.MEDIA_URL}logo.png'
             }
             html = template.render(context)

@@ -42,8 +42,8 @@ class ProductCreateView(ValidatePermissionRequiredMixin, CreateView):
     form_class = ProductForm
     template_name = 'product/create.html'
     success_url = reverse_lazy('product_list')
-    permission_required = 'add_product'
     url_redirect = success_url
+    permission_required = 'add_product'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -75,8 +75,8 @@ class ProductUpdateView(ValidatePermissionRequiredMixin, UpdateView):
     form_class = ProductForm
     template_name = 'product/create.html'
     success_url = reverse_lazy('product_list')
-    permission_required = 'change_product'
     url_redirect = success_url
+    permission_required = 'change_product'
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -108,8 +108,8 @@ class ProductDeleteView(ValidatePermissionRequiredMixin, DeleteView):
     model = Product
     template_name = 'product/delete.html'
     success_url = reverse_lazy('product_list')
-    permission_required = 'delete_product'
     url_redirect = success_url
+    permission_required = 'delete_product'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
