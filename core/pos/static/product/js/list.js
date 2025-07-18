@@ -38,6 +38,7 @@ var product = {
                 {
                     targets: [-4],
                     class: 'text-center',
+                    orderable: false,
                     render: function (data, type, row) {
                         if (row.is_inventoried) {
                             return '<span class="badge badge-success">Si</span>';
@@ -48,6 +49,7 @@ var product = {
                 {
                     targets: [-3],
                     class: 'text-center',
+                    orderable: false,
                     render: function (data, type, row) {
                         if (!row.is_inventoried) {
                             return '<span class="badge badge-secondary">Sin stock</span>';
@@ -61,6 +63,7 @@ var product = {
                 {
                     targets: [-2],
                     class: 'text-center',
+                    orderable: false,
                     render: function (data, type, row) {
                         return '$' + parseFloat(data).toFixed(2);
                     }

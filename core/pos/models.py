@@ -148,7 +148,7 @@ class Sale(models.Model):
         return item
 
     def delete(self, using=None, keep_parents=False):
-        for detail in self.saleproduct_set.filter(product__is_inventoried=True):
+        for detail in self.saleproduct_set.all():
             detail.product.stock += detail.cant
             detail.product.save()
         super(Sale, self).delete()
