@@ -61,7 +61,6 @@ class SaleCreateView(ValidatePermissionRequiredMixin, CreateView):
     template_name = 'sale/create.html'
     success_url = reverse_lazy('sale_list')
     permission_required = 'add_sale'
-    url_redirect = success_url
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -144,7 +143,6 @@ class SaleUpdateView(ValidatePermissionRequiredMixin, UpdateView):
     template_name = 'sale/create.html'
     success_url = reverse_lazy('sale_list')
     permission_required = 'change_sale'
-    url_redirect = success_url
 
     def get_form(self, form_class=None):
         instance = self.get_object()
@@ -245,7 +243,6 @@ class SaleDeleteView(ValidatePermissionRequiredMixin, DeleteView):
     template_name = 'sale/delete.html'
     success_url = reverse_lazy('sale_list')
     permission_required = 'delete_sale'
-    url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()

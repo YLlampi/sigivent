@@ -41,7 +41,6 @@ class CategoryCreateView(ValidatePermissionRequiredMixin, CreateView):
     template_name = 'category/create.html'
     success_url = reverse_lazy('category_list')
     permission_required = 'add_category'
-    url_redirect = success_url
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -71,7 +70,6 @@ class CategoryUpdateView(ValidatePermissionRequiredMixin, UpdateView):
     template_name = 'category/create.html'
     success_url = reverse_lazy('category_list')
     permission_required = 'change_category'
-    url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -104,7 +102,6 @@ class CategoryDeleteView(ValidatePermissionRequiredMixin, DeleteView):
     template_name = 'category/delete.html'
     success_url = reverse_lazy('category_list')
     permission_required = 'delete_category'
-    url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
