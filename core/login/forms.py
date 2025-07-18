@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django import forms
 from django.contrib.auth import authenticate
 from core.security.choices import LOGIN_TYPE
@@ -63,9 +65,20 @@ class AuthenticationForm(forms.Form):
         queryset = User.objects.filter(username=username)
         if queryset.exists():
             user = queryset[0]
+            if not user.is_active:
+                raise forms.ValidationError('El usuario ha sido bloqueado. Comuníquese con su administrador.')
             if authenticate(username=username, password=password) is None:
                 AccessUsers(user=user, type=LOGIN_TYPE[1][0]).save()
-                raise forms.ValidationError('La contraseña ingresada es incorrecta, por favor intentelo de nuevo.')
+                intent = user.accessusers_set.filter(type=LOGIN_TYPE[1][0], date_joined=datetime.now().date()).count()
+                if intent > 2:
+                    user.is_active = False
+                    user.save()
+                    raise forms.ValidationError(
+                        'El usuario ha sido bloqueado por superar el límite de intentos fallidos en un día.')
+                count = 3 - intent
+                raise forms.ValidationError(
+                    f"La contraseña ingresada es incorrecta, por favor intentelo de nuevo. Le quedan {count} {'intento' if count == 1 else 'intentos'}. Si supera los 3 intentos fallidos su cuenta sera bloqueada.")
+
             AccessUsers(user=user).save()
             return cleaned
         raise forms.ValidationError(
