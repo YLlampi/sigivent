@@ -32,4 +32,5 @@ urlpatterns = [
     path('sale/invoice/pdf/<int:pk>/', SaleInvoicePdfView.as_view(), name='sale_invoice_pdf'),
     # company
     path('company/update/', CompanyUpdateView.as_view(), name='company_update'),
+
 ]

@@ -12,7 +12,6 @@ class CompanyUpdateView(ValidatePermissionRequiredMixin, UpdateView):
     form_class = CompanyForm
     template_name = 'company/create.html'
     success_url = reverse_lazy('dashboard')
-    url_redirect = success_url
     permission_required = 'change_company'
 
     def get_object(self, queryset=None):
