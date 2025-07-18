@@ -6,6 +6,8 @@ from core.security.choices import LOGIN_TYPE
 from core.security.models import AccessUsers
 
 from core.user.models import User
+from core.security.choices import LOGIN_TYPE
+from core.security.models import AccessUsers
 import requests
 
 
