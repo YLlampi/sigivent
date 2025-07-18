@@ -42,10 +42,10 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     'core.login',
+    'core.pos',
     'core.reports',
     'core.user',
     'core.homepage',
-    'core.pos',
 ]
 
 THIRD_PARTY_APPS = [
@@ -173,5 +173,3 @@ REST_FRAMEWORK = {
 # System settings
 
 DOMAIN = ''
-
-SECURE_CROSS_ORIGIN_OPENER_POLICY = None

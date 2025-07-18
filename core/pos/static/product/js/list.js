@@ -21,14 +21,13 @@ var product = {
                 {"data": "name"},
                 {"data": "category.name"},
                 {"data": "image"},
-                {"data": "is_inventoried"},
                 {"data": "stock"},
                 {"data": "pvp"},
                 {"data": "id"},
             ],
             columnDefs: [
                 {
-                    targets: [-5],
+                    targets: [-4],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -36,28 +35,14 @@ var product = {
                     }
                 },
                 {
-                    targets: [-4],
-                    class: 'text-center',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        if (row.is_inventoried) {
-                            return '<span class="badge badge-success">Si</span>';
-                        }
-                        return '<span class="badge badge-warning">No</span>';
-                    }
-                },
-                {
                     targets: [-3],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        if (!row.is_inventoried) {
-                            return '<span class="badge badge-secondary">Sin stock</span>';
-                        }
                         if (row.stock > 0) {
-                            return '<span class="badge badge-success">' + data + '</span>';
+                            return '<span class="badge badge-success">' + data + '</span>'
                         }
-                        return '<span class="badge badge-danger">' + data + '</span>';
+                        return '<span class="badge badge-danger">' + data + '</span>'
                     }
                 },
                 {

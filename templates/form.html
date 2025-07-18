@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 {% load widget_tweaks %}
-{% load pos_extras %}
 {% block head %}
     {% block head_form %}
 
@@ -39,11 +38,7 @@
                     {% for field in form.visible_fields %}
                         <div class="form-group">
                             <label for="email">{{ field.label }}:</label>
-                            {% if field|is_checkbox %}
-                               <br>{{ field }}
-                            {% else %}
-                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
-                            {% endif %}
+                            {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
                     {% endfor %}
                 </div>

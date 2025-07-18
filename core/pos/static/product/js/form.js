@@ -1,10 +1,4 @@
-var input_is_inventoried;
-var form_group;
-
 $(function () {
-    input_is_inventoried = $('input[name="is_inventoried"]');
-    form_group = document.getElementsByClassName('form-group');
-
     $('.select2').select2({
         theme: "bootstrap4",
         language: 'es'
@@ -35,17 +29,4 @@ $(function () {
         .on('keypress', function (e) {
             return validate_form_text('numbers', e, null);
         });
-
-    input_is_inventoried.on('change', function () {
-        $(form_group[4]).show();
-        if (!this.checked) {
-            $(form_group[4]).hide();
-        }
-    });
-
-    if ($('input[name="action"]').val() === 'edit') {
-        input_is_inventoried.trigger('change');
-    }
-
-    // input_is_inventoried.removeClass();
 });
