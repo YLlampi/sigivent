@@ -373,6 +373,7 @@ $(function () {
     });
 
     $('#tblSearchProducts tbody')
+        .off()
         .on('click', 'a[rel="add"]', function () {
             var tr = tblSearchProducts.cell($(this).closest('td, li')).index();
             var product = tblSearchProducts.row(tr.row).data();
