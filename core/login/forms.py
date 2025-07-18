@@ -2,6 +2,9 @@ from datetime import datetime
 
 from django import forms
 from django.contrib.auth import authenticate
+from core.security.choices import LOGIN_TYPE
+from core.security.models import AccessUsers
+
 from core.user.models import User
 from core.security.choices import LOGIN_TYPE
 from core.security.models import AccessUsers
@@ -72,12 +75,16 @@ class AuthenticationForm(forms.Form):
                 if intent > 2:
                     user.is_active = False
                     user.save()
-                    raise forms.ValidationError('El usuario ha sido bloqueado por superar el límite de intentos fallidos en un día.')
+                    raise forms.ValidationError(
+                        'El usuario ha sido bloqueado por superar el límite de intentos fallidos en un día.')
                 count = 3 - intent
-                raise forms.ValidationError(f"La contraseña ingresada es incorrecta, por favor intentelo de nuevo. Le quedan {count} {'intento' if count == 1 else 'intentos'}. Si supera los 3 intentos fallidos su cuenta sera bloqueada.")
+                raise forms.ValidationError(
+                    f"La contraseña ingresada es incorrecta, por favor intentelo de nuevo. Le quedan {count} {'intento' if count == 1 else 'intentos'}. Si supera los 3 intentos fallidos su cuenta sera bloqueada.")
+
             AccessUsers(user=user).save()
             return cleaned
-        raise forms.ValidationError('Por favor introduzca el nombre de usuario y la clave correctos para una cuenta de personal. Observe que ambos campos pueden ser sensibles a mayúsculas.')
+        raise forms.ValidationError(
+            'Por favor introduzca el nombre de usuario y la clave correctos para una cuenta de personal. Observe que ambos campos pueden ser sensibles a mayúsculas.')
 
     def get_user(self):
         username = self.cleaned_data.get('username')
