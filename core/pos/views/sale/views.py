@@ -31,10 +31,10 @@ class SaleListView(ValidatePermissionRequiredMixin, FormView):
                 data = []
                 start_date = request.POST['start_date']
                 end_date = request.POST['end_date']
-                search = Sale.objects.all()
+                queryset = Sale.objects.all()
                 if len(start_date) and len(end_date):
-                    search = search.filter(date_joined__range=[start_date, end_date])
-                for i in search:
+                    queryset = queryset.filter(date_joined__range=[start_date, end_date])
+                for i in queryset:
                     data.append(i.toJSON())
             elif action == 'search_products_detail':
                 data = []

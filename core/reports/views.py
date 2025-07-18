@@ -20,10 +20,10 @@ class ReportSaleView(FormView):
                 data = []
                 start_date = request.POST.get('start_date', '')
                 end_date = request.POST.get('end_date', '')
-                search = Sale.objects.all()
+                queryset = Sale.objects.all()
                 if len(start_date) and len(end_date):
-                    search = search.filter(date_joined__range=[start_date, end_date])
-                for s in search:
+                    queryset = queryset.filter(date_joined__range=[start_date, end_date])
+                for s in queryset:
                     data.append([
                         s.id,
                         s.client.names,
@@ -33,9 +33,9 @@ class ReportSaleView(FormView):
                         f'{s.total:.2f}',
                     ])
 
-                subtotal = search.aggregate(r=Coalesce(Sum('subtotal'), 0, output_field=FloatField())).get('r')
-                iva = search.aggregate(r=Coalesce(Sum('iva'), 0, output_field=FloatField())).get('r')
-                total = search.aggregate(r=Coalesce(Sum('total'), 0, output_field=FloatField())).get('r')
+                subtotal = queryset.aggregate(r=Coalesce(Sum('subtotal'), 0, output_field=FloatField())).get('r')
+                iva = queryset.aggregate(r=Coalesce(Sum('iva'), 0, output_field=FloatField())).get('r')
+                total = queryset.aggregate(r=Coalesce(Sum('total'), 0, output_field=FloatField())).get('r')
 
                 data.append([
                     '---',
