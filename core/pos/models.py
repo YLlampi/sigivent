@@ -114,6 +114,7 @@ class Company(models.Model):
 
 
 class Sale(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_joined = models.DateField(default=datetime.now)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
@@ -123,6 +124,12 @@ class Sale(models.Model):
 
     def __str__(self):
         return self.client.names
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if Company.objects.all().exists():
+            self.company = Company.objects.first()
+        super(Sale, self).save()
 
     def get_number(self):
         return f'{self.id:06d}'
