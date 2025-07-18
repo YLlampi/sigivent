@@ -54,6 +54,9 @@ var sale = {
                     targets: [-4],
                     class: 'text-center',
                     render: function (data, type, row) {
+                        if (!row.is_inventoried) {
+                            return '<span class="badge badge-secondary">Sin stock</span>';
+                        }
                         return '<span class="badge badge-secondary">' + data + '</span>';
                     }
                 },
@@ -94,7 +97,7 @@ var sale = {
 
                 $(row).find('input[name="cant"]').TouchSpin({
                     min: 1,
-                    max: data.stock,
+                    max: data.is_inventoried ? row.stock : 1000000,
                     step: 1
                 });
 
@@ -240,6 +243,8 @@ $(function () {
                 return repo.text;
             }
 
+            var stock = repo.is_inventoried ? repo.stock : 'Sin stock';
+
             return $(
                 '<div class="wrapper container">' +
                 '<div class="row">' +
@@ -250,7 +255,7 @@ $(function () {
                 //'<br>' +
                 '<p style="margin-bottom: 0;">' +
                 '<b>Nombre:</b> ' + repo.full_name + '<br>' +
-                '<b>Stock:</b> ' + repo.stock + '<br>' +
+                '<b>Stock:</b> ' + stock + '<br>' +
                 '<b>PVP:</b> <span class="badge badge-warning">$' + repo.pvp + '</span>' +
                 '</p>' +
                 '</div>' +
@@ -344,6 +349,9 @@ $(function () {
                     targets: [-3],
                     class: 'text-center',
                     render: function (data, type, row) {
+                        if (!row.is_inventoried) {
+                            return '<span class="badge badge-secondary">Sin stock</span>';
+                        }
                         return '<span class="badge badge-secondary">' + data + '</span>';
                     }
                 },

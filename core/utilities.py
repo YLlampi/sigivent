@@ -4,6 +4,26 @@ from random import randint
 from config import wsgi
 import json
 from core.pos.models import *
+from core.user.models import User
+
+user = User()
+user.username = 'admin'
+user.first_name = 'William Jair'
+user.last_name = 'Dávila Vargas'
+user.email = 'williamjair94@hotmail.com'
+user.set_password('admin123')
+user.is_superuser = True
+user.save()
+print('Usuario creado correctamente')
+
+company = Company()
+company.name = 'APOLO S.A.'
+company.ruc = '0928363212121'
+company.address = 'Milagro, Ecuador'
+company.mobile = '0979014552'
+company.website = 'https://algorisoft.com'
+company.save()
+print('Compañia creado correctamente')
 
 
 def insert_products():
