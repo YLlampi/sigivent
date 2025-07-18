@@ -1,5 +1,8 @@
 from django import forms
 from django.contrib.auth import authenticate
+from core.security.choices import LOGIN_TYPE
+from core.security.models import AccessUsers
+
 from core.user.models import User
 import requests
 
@@ -57,10 +60,16 @@ class AuthenticationForm(forms.Form):
         # response_api = self.get_or_create_user_api(username=username, password=password)
         # if not response_api.get('resp'):
         #     raise forms.ValidationError(response_api.get('msg'))
-        user = authenticate(username=username, password=password)
-        if user is None:
-            raise forms.ValidationError('Por favor introduzca el nombre de usuario y la clave correctos para una cuenta de personal. Observe que ambos campos pueden ser sensibles a mayúsculas.')
-        return cleaned
+        queryset = User.objects.filter(username=username)
+        if queryset.exists():
+            user = queryset[0]
+            if authenticate(username=username, password=password) is None:
+                AccessUsers(user=user, type=LOGIN_TYPE[1][0]).save()
+                raise forms.ValidationError('La contraseña ingresada es incorrecta, por favor intentelo de nuevo.')
+            AccessUsers(user=user).save()
+            return cleaned
+        raise forms.ValidationError(
+            'Por favor introduzca el nombre de usuario y la clave correctos para una cuenta de personal. Observe que ambos campos pueden ser sensibles a mayúsculas.')
 
     def get_user(self):
         username = self.cleaned_data.get('username')
