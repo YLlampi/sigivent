@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import numpy as np
 import xgboost as xgb
@@ -7,7 +9,9 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 print("Cargando los datos...")
 try:
-    df = pd.read_csv('historico_ventas.csv')
+    script_dir = os.path.dirname(__file__)
+    csv_path = os.path.join(script_dir, 'historico_ventas.csv')
+    df = pd.read_csv(csv_path)
 except FileNotFoundError:
     print("Error: Asegúrate de que el archivo 'historico_ventas.csv' esté en la misma carpeta que este script.")
     exit()
@@ -39,25 +43,23 @@ split_date = df_diario.index.max() - pd.DateOffset(days=int(len(df_diario) * 0.2
 X_train, X_test = X.loc[X.index <= split_date], X.loc[X.index > split_date]
 y_train, y_test = y.loc[y.index <= split_date], y.loc[y.index > split_date]
 
-print(f"\nEntrenando modelo con datos hasta {split_date.date()}...")
-model = xgb.XGBRegressor(
+print(f"\nEntrenando y evaluando con datos hasta {split_date.date()}...")
+
+model_test = xgb.XGBRegressor(
     objective='reg:squarederror',
-    n_estimators=1000, 
+    n_estimators=1000,
     learning_rate=0.01,
     max_depth=5,
-    subsample=0.8,
-    colsample_bytree=0.8,
-    random_state=42,
     early_stopping_rounds=50
 )
 
-model.fit(X_train, y_train,
-          eval_set=[(X_test, y_test)],
-          verbose=False)
+model_test.fit(X_train, y_train,
+             eval_set=[(X_test, y_test)],
+             verbose=False)
 
-print("Modelo entrenado exitosamente.")
+print("Modelo de prueba entrenado exitosamente.")
 
-predictions = model.predict(X_test)
+predictions = model_test.predict(X_test)
 mae = mean_absolute_error(y_test, predictions)
 rmse = np.sqrt(mean_squared_error(y_test, predictions))
 
@@ -74,10 +76,19 @@ plt.xlabel('Fecha')
 plt.ylabel('Cantidad Vendida')
 plt.legend()
 plt.grid(True, linestyle='--', alpha=0.6)
-plt.show()
+plt.savefig('grafica_prueba.png')
+print("\nGráfica de prueba guardada como 'grafica_prueba.png'")
+
 
 print("\nRealizando predicción para los próximos 30 días...")
-model.fit(X, y, verbose=False)
+
+final_model = xgb.XGBRegressor(
+    objective='reg:squarederror',
+    n_estimators=1000,
+    learning_rate=0.01,
+    max_depth=5
+)
+final_model.fit(X, y, verbose=False)
 
 future_dates = pd.date_range(start=df_diario.index.max() + pd.Timedelta(days=1), periods=30, freq='D')
 future_df = pd.DataFrame(index=future_dates)
@@ -89,7 +100,8 @@ future_df['mes'] = future_df.index.month
 future_df['año'] = future_df.index.year
 future_df['semana_del_año'] = future_df.index.isocalendar().week.astype(int)
 
-future_predictions = model.predict(future_df)
+future_predictions = final_model.predict(future_df)
+
 
 plt.figure(figsize=(15, 6))
 plt.title('Predicción de Ventas para los Próximos 30 Días', fontsize=16)
@@ -99,4 +111,5 @@ plt.xlabel('Fecha')
 plt.ylabel('Cantidad Vendida')
 plt.legend()
 plt.grid(True, linestyle='--', alpha=0.6)
-plt.show()
+plt.savefig('grafica_prediccion_futura.png')
+print("Gráfica de predicción futura guardada como 'grafica_prediccion_futura.png'")
