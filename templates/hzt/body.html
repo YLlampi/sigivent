@@ -1,54 +1,85 @@
 {% extends 'home.html' %}
+{% load static %}
+
 {% block body %}
-    <body class="hold-transition layout-top-nav">
+<body class="hold-transition layout-top-nav">
+    <style>
+        .content-wrapper {
+            background-color: #f4f6f9;
+        }
+        /* Añade una sombra sutil a las tarjetas para darles profundidad */
+        .card {
+            box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+            border: none;
+        }
+        .content-header h1 {
+            font-weight: 300; /* Un peso de fuente más ligero para el título principal */
+        }
+    </style>
+
     <div class="wrapper">
-        <!-- Header -->
         {% include 'hzt/header.html' %}
-        <!-- Content -->
+
         <div class="content-wrapper">
             <div class="content-header">
                 <div class="container">
-                    <div class="row">
+                    <div class="row mb-2 align-items-center">
                         <div class="col-sm-6">
-                            <h1 class="m-0 text-dark"> Bienvenido <small>{{ request.user.get_full_name }}</small></h1>
+                            <h1 class="m-0">
+                                {{ title|default:'Panel Principal' }}
+                                <small class="text-muted font-weight-light ml-2">{{ subtitle|default:'' }}</small>
+                            </h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item"><a href="{{ list_url }}">{{ entity }}</a></li>
+                                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                                {% block breadcrumb %}{% endblock %}
                             </ol>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="content">
                 <div class="container">
                     {% block content %}
-
-                    {% endblock %}
+                        {% endblock %}
                 </div>
             </div>
         </div>
-        <!-- Footer -->
+        
         {% include 'footer.html' %}
     </div>
-    <!-- Block javascript -->
-    {% block javascript %}
 
-    {% endblock %}
+    {% block javascript %}{% endblock %}
+
     <script>
+        // Este bloque gestiona los mensajes del framework de Django
         {% if messages %}
-            var html = '<p>';
-            {% for message in messages %}
-                html += '{{ message }}<br>';
-            {% endfor %}
-            html += '</p>';
-            Swal.fire({
-                title: 'Error!',
-                html: html,
-                icon: 'error'
+            // Se define un estilo de notificación "Toast" (pequeño y en una esquina)
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000, // La notificación desaparece a los 5 segundos
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
             });
+
+            // Se itera sobre cada mensaje enviado desde la vista
+            {% for message in messages %}
+                // Se dispara una notificación Toast para cada mensaje
+                Toast.fire({
+                    // El icono ('success', 'error', 'warning') se toma de la etiqueta del mensaje
+                    icon: '{{ message.tags }}', 
+                    // El texto del mensaje
+                    title: '{{ message|safe }}'
+                });
+            {% endfor %}
         {% endif %}
     </script>
-    </body>
+</body>
 {% endblock %}
