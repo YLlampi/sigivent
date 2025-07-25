@@ -41,7 +41,7 @@ class ReportSaleView(FormView):
                     ])
 
                 subtotal = queryset.aggregate(r=Coalesce(Sum('subtotal'), 0, output_field=FloatField())).get('r')
-                iva = queryset.aggregate(r=Coalesce(Sum('iva'), 0, output_field=FloatField())).get('r')
+                iva = queryset.aggregate(r=Coalesce(Sum('total_iva'), 0, output_field=FloatField())).get('r')
                 total = queryset.aggregate(r=Coalesce(Sum('total'), 0, output_field=FloatField())).get('r')
 
                 data.append([
