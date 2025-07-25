@@ -59,7 +59,7 @@ class SaleCreateView(ExistsCompanyMixin, ValidatePermissionRequiredMixin, Create
     model = Sale
     form_class = SaleForm
     template_name = 'sale/create.html'
-    success_url = reverse_lazy('sale_list')
+    success_url = reverse_lazy('sale_report')
     url_redirect = success_url
     permission_required = 'add_sale'
 

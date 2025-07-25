@@ -119,7 +119,8 @@ $(function () {
     input_daterange
         .daterangepicker({
             language: 'auto',
-            startDate: new Date(),
+            startDate: moment().startOf('month'),
+            endDate: moment(),
             locale: {
                 format: 'YYYY-MM-DD',
                 applyLabel: '<i class="fas fa-chart-pie"></i> Aplicar',
@@ -131,4 +132,6 @@ $(function () {
         });
 
     $('.drp-buttons').hide();
+
+    report.list();
 });

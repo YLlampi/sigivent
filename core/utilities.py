@@ -20,8 +20,8 @@ company = Company()
 company.name = 'Tiendeo'
 company.ruc = '9876543211'
 company.address = 'Cercado, Arequipa'
-company.mobile = '98765432'
-company.website = 'https://tiendeo.com.pe'
+company.mobile = '987654321'
+company.website = 'https://sigivent.com.pe'
 company.save()
 print('Compañia creado correctamente')
 

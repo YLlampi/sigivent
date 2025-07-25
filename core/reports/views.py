@@ -3,6 +3,7 @@ from django.db.models.functions import Coalesce
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import FormView
+from datetime import datetime, date
 
 from core.pos.models import Sale
 from core.reports.forms import ReportForm
@@ -20,6 +21,12 @@ class ReportSaleView(FormView):
                 data = []
                 start_date = request.POST.get('start_date', '')
                 end_date = request.POST.get('end_date', '')
+
+                if not start_date or not end_date:
+                    today = date.today()
+                    start_date = today.replace(day=1).strftime('%Y-%m-%d')
+                    end_date = today.strftime('%Y-%m-%d')
+
                 queryset = Sale.objects.all()
                 if len(start_date) and len(end_date):
                     queryset = queryset.filter(date_joined__range=[start_date, end_date])
