@@ -17,7 +17,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from config import settings
+from django.conf import settings
+#from config import settings
 from core.homepage.views import IndexView
 from django.conf.urls import handler404
 from core.pos.views.dashboard.views import page_not_found404

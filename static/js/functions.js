@@ -1,17 +1,12 @@
-/**
- * Obtiene el valor de una cookie por su nombre.
- * @param {string} name - El nombre de la cookie.
- * @returns {string|null} El valor de la cookie o null si no se encuentra.
- */
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
-        for (const cookie of cookies) {
-            const trimmedCookie = cookie.trim();
-            // La cookie comienza con el nombre que buscamos?
-            if (trimmedCookie.startsWith(name + '=')) {
-                cookieValue = decodeURIComponent(trimmedCookie.substring(name.length + 1));
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
         }
@@ -21,66 +16,25 @@ function getCookie(name) {
 
 const csrftoken = getCookie('csrftoken');
 
-/**
- * Muestra un modal de error utilizando SweetAlert2.
- * @param {string|object} obj - El mensaje de error o un objeto con los errores.
- */
 function message_error(obj) {
-    let html = '';
-    if (typeof obj === 'object' && obj !== null) {
+    var html = '';
+    if (typeof (obj) === 'object') {
         html = '<ul style="text-align: left;">';
-        // Usando Object.entries para iterar sobre el objeto de forma moderna
-        for (const [key, value] of Object.entries(obj)) {
-            html += `<li>${key}: ${value}</li>`;
-        }
+        $.each(obj, function (key, value) {
+            html += '<li>' + key + ': ' + value + '</li>';
+        });
         html += '</ul>';
     } else {
-        html = `<p>${obj}</p>`;
+        html = '<p>' + obj + '</p>';
     }
     Swal.fire({
-        title: '¡Error!',
+        title: 'Error!',
         html: html,
         icon: 'error'
     });
 }
 
-/**
- * Envía datos vía AJAX, con una confirmación opcional.
- * Si el parámetro 'title' es nulo, el envío es directo.
- * @param {string} url - La URL a la que se enviarán los datos.
- * @param {string|null} title - El título para el diálogo de confirmación. Si es null, no hay confirmación.
- * @param {string} content - El mensaje para el diálogo de confirmación.
- * @param {FormData} parameters - Los datos del formulario a enviar.
- * @param {function} callback - La función a ejecutar si la petición tiene éxito.
- */
 function submit_with_ajax(url, title, content, parameters, callback) {
-    const process_ajax = () => {
-        $.ajax({
-            url: url,
-            data: parameters,
-            type: 'POST',
-            dataType: 'json',
-            headers: { 'X-CSRFToken': csrftoken },
-            processData: false,
-            contentType: false,
-        }).done(function(request) {
-            if (!request.hasOwnProperty('error')) {
-                callback(request);
-            } else {
-                message_error(request.error);
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            message_error(errorThrown + ' ' + textStatus);
-        });
-    };
-
-    // Si no se proporciona un título, ejecuta el AJAX directamente sin confirmación.
-    if (title === null) {
-        process_ajax();
-        return;
-    }
-
-    // Si hay título, muestra el diálogo de confirmación.
     $.confirm({
         theme: 'material',
         title: title,
@@ -93,28 +47,43 @@ function submit_with_ajax(url, title, content, parameters, callback) {
         dragWindowBorder: false,
         buttons: {
             info: {
-                text: "Sí",
+                text: "Si",
                 btnClass: 'btn-primary',
-                action: function() {
-                    process_ajax();
+                action: function () {
+                    $.ajax({
+                        url: url,
+                        data: parameters,
+                        type: 'POST',
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                        processData: false,
+                        contentType: false,
+                        success: function (request) {
+                            if (!request.hasOwnProperty('error')) {
+                                callback(request);
+                                return false;
+                            }
+                            message_error(request.error);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            message_error(errorThrown + ' ' + textStatus);
+                        }
+                    });
                 }
             },
             danger: {
                 text: "No",
                 btnClass: 'btn-red',
-                action: function() {}
+                action: function () {
+
+                }
             },
         }
-    });
+    })
 }
 
-/**
- * Muestra un diálogo de confirmación genérico.
- * @param {string} title - El título del diálogo.
- * @param {string} content - El mensaje del diálogo.
- * @param {function} callback - Función a ejecutar al confirmar.
- * @param {function} [cancel] - Función opcional a ejecutar al cancelar.
- */
 function alert_action(title, content, callback, cancel) {
     $.confirm({
         theme: 'material',
@@ -128,31 +97,62 @@ function alert_action(title, content, callback, cancel) {
         dragWindowBorder: false,
         buttons: {
             info: {
-                text: "Sí",
+                text: "Si",
                 btnClass: 'btn-primary',
-                action: function() {
+                action: function () {
                     callback();
                 }
             },
             danger: {
                 text: "No",
                 btnClass: 'btn-red',
-                action: function() {
-                    if (cancel) {
-                        cancel();
-                    }
+                action: function () {
+                    cancel();
                 }
             },
         }
-    });
+    })
 }
 
-// Las funciones de validación de teclado se mantienen por compatibilidad,
-// aunque se recomienda usar validación basada en eventos de 'input' y regex.
 function validate_form_text(type, event, regex) {
-    // ... (El código interno de esta función se mantiene sin cambios)
+    var key = event.keyCode || event.which;
+    var numbers = (key > 47 && key < 58) || key === 8;
+    var numbers_spaceless = (key > 47 && key < 58);
+    var letters = !((key !== 32) && (key < 65) || (key > 90) && (key < 97) || (key > 122 && key !== 241 && key !== 209 && key !== 225 && key !== 233 && key !== 237 && key !== 243 && key !== 250 && key !== 193 && key !== 201 && key !== 205 && key !== 211 && key !== 218)) || key === 8;
+    var letters_spaceless = !((key < 65) || (key > 90) && (key < 97) || (key > 122 && key !== 241 && key !== 209 && key !== 225 && key !== 233 && key !== 237 && key !== 243 && key !== 250 && key !== 193 && key !== 201 && key !== 205 && key !== 211 && key !== 218)) || key === 8;
+    var decimals = ((key > 47 && key < 58) || key === 8 || key === 46);
+
+    if (type === 'numbers') {
+        return numbers;
+    } else if (type === 'numbers_spaceless') {
+        return numbers_spaceless;
+    } else if (type === 'letters') {
+        return letters;
+    } else if (type === 'numbers_letters') {
+        return numbers || letters;
+    } else if (type === 'letters_spaceless') {
+        return letters_spaceless;
+    } else if (type === 'letters_numbers_spaceless') {
+        return letters_spaceless || numbers_spaceless;
+    } else if (type === 'decimals') {
+        return decimals;
+    } else if (type === 'regex') {
+        return regex;
+    }
+    return true;
 }
 
 function validate_decimals(el, evt) {
-    // ... (El código interno de esta función se mantiene sin cambios)
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    var number = el.val().split('.');
+
+    if (charCode !== 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    } else if (number.length > 1 && charCode === 46) {
+        return false;
+    } else if (el.val().length === 0 && charCode === 46) {
+        return false;
+    }
+
+    return true;
 }

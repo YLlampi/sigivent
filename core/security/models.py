@@ -5,7 +5,6 @@ from django.db import models
 from django.forms import model_to_dict
 
 from core.security.choices import LOGIN_TYPE
-
 from core.user.models import User
 
 
@@ -15,7 +14,6 @@ class AccessUsers(models.Model):
     time_joined = models.TimeField(default=datetime.now)
     ip_address = models.CharField(max_length=50)
     type = models.CharField(max_length=15, choices=LOGIN_TYPE, default=LOGIN_TYPE[0][0])
-
 
     def __str__(self):
         return self.ip_address

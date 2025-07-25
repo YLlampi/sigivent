@@ -17,7 +17,7 @@ $(function () {
             boostat: 5,
             verticalbuttons: true,
             maxboostedstep: 10,
-            prefix: '$'
+            prefix: 'S/'
         })
         .on('keypress', function (e) {
             return validate_decimals($(this), e);

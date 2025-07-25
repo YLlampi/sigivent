@@ -5,8 +5,9 @@
 __pycache__/
 */migrations/*
 **/migrations/*
+!**/migrations/__init__.py
 */logs/*
-config/*
+config/settings_dev.py
 staticfiles/*
 db.sqlite3
 media
@@ -140,7 +141,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+
 lib64/
 parts/
 sdist/
@@ -196,7 +197,6 @@ target/
 # celery beat schedule file
 celerybeat-schedule.*
 
-# wdavila@in-planet.netSageMath parsed files
 *.sage.py
 
 # Environments

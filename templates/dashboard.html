@@ -2,110 +2,60 @@
 {% load static %}
 
 {% block head %}
+    {# Highcharts Library #}
     <script src="{% static 'lib/highcharts-9.1.1/highcharts.js' %}"></script>
     <script src="{% static 'lib/highcharts-9.1.1/modules/exporting.js' %}"></script>
     <script src="{% static 'lib/highcharts-9.1.1/modules/export-data.js' %}"></script>
     <script src="{% static 'lib/highcharts-9.1.1/modules/accessibility.js' %}"></script>
+
+    {# Custom CSS for better aesthetics (Optional but recommended) #}
+    <style>
+        .card {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-radius: 0.5rem;
+        }
+        .highcharts-figure, .highcharts-data-table table {
+            min-width: 320px;
+            max-width: 800px;
+            margin: 1em auto;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid pt-4">
     <div class="row mb-4">
-        <div class="col-lg-12">
-            <div id="container"></div>
+        <div class="col-12">
+            <h1 class="h2">Dashboard de Ventas</h1>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-lg-12">
-            <div id="container-pie"></div>
+        {# Gráfico de Columnas - Ocupa más espacio #}
+        <div class="col-lg-7 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <figure class="highcharts-figure mb-0">
+                        <div id="container-column"></div>
+                    </figure>
+                </div>
+            </div>
+        </div>
+
+        {# Gráfico de Torta (Donut) - Ocupa menos espacio #}
+        <div class="col-lg-5 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                     <figure class="highcharts-figure mb-0">
+                        <div id="container-pie"></div>
+                    </figure>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<script type="application/javascript">
-    $(function () {
-        // --- FUNCIÓN REUTILIZABLE PARA AJAX ---
-        /**
-         * Realiza una petición AJAX para obtener los datos y agregarlos a un gráfico.
-         * @param {string} action - La acción a enviar al backend.
-         * @param {object} chartInstance - La instancia del gráfico de Highcharts.
-         */
-        function getChartData(action, chartInstance) {
-            $.ajax({
-                url: pathname,
-                data: { 'action': action },
-                type: 'POST',
-                dataType: 'json',
-                headers: { 'X-CSRFToken': csrftoken },
-                success: function (request) {
-                    if (request.hasOwnProperty('error')) {
-                        message_error(request.error);
-                        return;
-                    }
-                    chartInstance.addSeries(request);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    message_error(errorThrown + ' ' + textStatus);
-                }
-            });
-        }
-
-        // --- INICIALIZACIÓN DE GRÁFICOS (con nombres originales) ---
-
-        var graphcolumn = Highcharts.chart('container', {
-            chart: { type: 'column' },
-            title: { text: 'Reporte de ventas del año 2021' },
-            subtitle: { text: 'Reporte de columnas' },
-            xAxis: {
-                categories: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-                crosshair: true
-            },
-            yAxis: {
-                min: 0,
-                title: { text: 'Valores $' }
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                             '<td style="padding:0"><b>{point.y:.1f} $</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: {
-                column: { pointPadding: 0.2, borderWidth: 0 }
-            }
-        });
-
-        var graphpie = Highcharts.chart('container-pie', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: { text: 'Porcentaje de venta de productos por el mes de Junio del año 2020' },
-            tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' },
-            accessibility: {
-                point: { valueSuffix: '%' }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                    }
-                }
-            }
-        });
-
-        // --- EJECUCIÓN ---
-        
-        getChartData('get_graph_sales_year_month', graphcolumn);
-        getChartData('get_graph_sales_products_year_month', graphpie);
-    });
-</script>
+{# Link to your new custom JS file #}
+<script src="{% static 'js/dashboard_charts.js' %}"></script>
 {% endblock %}

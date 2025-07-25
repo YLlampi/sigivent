@@ -1,19 +1,20 @@
-const datatable = {
-    instance: null,
-    dateRangeInput: null,
+var input_daterange;
 
-    list: function (loadAll = false) {
-        const startDate = this.dateRangeInput.data('daterangepicker').startDate.format('YYYY-MM-DD');
-        const endDate = this.dateRangeInput.data('daterangepicker').endDate.format('YYYY-MM-DD');
-
-        const parameters = {
+var access_users = {
+    list: function (all) {
+        var parameters = {
             'action': 'search',
-            'start_date': loadAll ? '' : startDate,
-            'end_date': loadAll ? '' : endDate,
+            'start_date': input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD'),
+            'end_date': input_daterange.data('daterangepicker').endDate.format('YYYY-MM-DD'),
         };
-
-        const dataTableOptions = {
+        if (all) {
+            parameters['start_date'] = '';
+            parameters['end_date'] = '';
+        }
+        $('#data').DataTable({
             responsive: true,
+            // scrollX: true,
+            // autoWidth: false,
             destroy: true,
             deferRender: true,
             ajax: {
@@ -25,54 +26,66 @@ const datatable = {
                     'X-CSRFToken': csrftoken
                 }
             },
-            order: [[2, "desc"], [3, "desc"]],
             columns: [
-                { "data": "id" },
-                { "data": "user.username" },
-                { "data": "date_joined" },
-                { "data": "time_joined" },
-                { "data": "ip_address" },
-                { "data": "id" },
+                {"data": "id"},
+                {"data": "user.username"},
+                {"data": "date_joined"},
+                {"data": "time_joined"},
+                {"data": "ip_address"},
+                {"data": "type.id"},
+                {"data": "id"},
             ],
+            order: [[2, "desc"], [3, "desc"]],
             columnDefs: [
+                {
+                    targets: [-2],
+                    class: 'text-center',
+                    render: function (data, type, row) {
+                        var name = row.type.name;
+                        if (row.type.id === 'success') {
+                            return '<span class="badge badge-success badge-pill">' + name + '</span>';
+                        }
+                        return '<span class="badge badge-danger badge-pill">' + name + '</span>';
+                    }
+                },
                 {
                     targets: [-1],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return `<a href="${pathname}delete/${row.id}/" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>`;
+                        return '<a href="' + pathname + 'delete/' + row.id + '/" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a>';
                     }
                 },
             ],
             initComplete: function (settings, json) {
-                
-            }
-        };
 
-        this.instance = $('#data').DataTable(dataTableOptions);
+            }
+        });
     },
 };
 
 $(function () {
-    datatable.dateRangeInput = $('input[name="date_range"]');
 
-    datatable.dateRangeInput.daterangepicker({
-        language: 'auto',
-        startDate: new Date(),
-        locale: {
-            format: 'YYYY-MM-DD',
-        }
-    });
+    input_daterange = $('input[name="date_range"]');
+
+    input_daterange
+        .daterangepicker({
+            language: 'auto',
+            startDate: new Date(),
+            locale: {
+                format: 'YYYY-MM-DD',
+            }
+        });
 
     $('.drp-buttons').hide();
 
     $('.btnSearch').on('click', function () {
-        datatable.list(false);
+        access_users.list(false);
     });
 
     $('.btnSearchAll').on('click', function () {
-        datatable.list(true);
+        access_users.list(true);
     });
 
-    datatable.list(false);
+    access_users.list(false);
 });

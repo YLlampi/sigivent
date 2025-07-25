@@ -73,7 +73,7 @@ var sale = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '$' + parseFloat(data).toFixed(2);
+                        return 'S/ ' + parseFloat(data).toFixed(2);
                     }
                 },
                 {
@@ -89,7 +89,7 @@ var sale = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '$' + parseFloat(data).toFixed(2);
+                        return 'S/ ' + parseFloat(data).toFixed(2);
                     }
                 },
             ],
@@ -411,7 +411,7 @@ $(function () {
         postfix: '%'
     }).on('change', function () {
         sale.calculateInvoice();
-    }).val(0.12);
+    }).val(0.18);
 
     $('#frmSale').on('submit', function (e) {
         e.preventDefault();

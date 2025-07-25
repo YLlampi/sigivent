@@ -58,7 +58,7 @@ class Product(models.Model):
 
 class Client(models.Model):
     names = models.CharField(max_length=150, verbose_name='Nombres')
-    dni = models.CharField(max_length=10, unique=True, verbose_name='Número de cedula')
+    dni = models.CharField(max_length=10, unique=True, verbose_name='DNI')
     birthdate = models.DateField(default=datetime.now, verbose_name='Fecha de nacimiento')
     address = models.CharField(max_length=150, null=True, blank=True, verbose_name='Dirección')
     gender = models.CharField(max_length=10, choices=genders, default='male', verbose_name='Genero')
@@ -80,38 +80,6 @@ class Client(models.Model):
         verbose_name = 'Cliente'
         verbose_name_plural = 'Clientes'
         ordering = ['id']
-
-class Company(models.Model):
-    name = models.CharField(max_length=150, verbose_name='Razón Social')
-    ruc = models.CharField(max_length=13, verbose_name='Ruc')
-    address = models.CharField(max_length=150, null=True, blank=True, verbose_name='Dirección')
-    mobile = models.CharField(max_length=10, verbose_name='Teléfono Celular')
-    phone = models.CharField(max_length=7, verbose_name='Teléfono Convencional')
-    website = models.CharField(max_length=150, verbose_name='Website')
-    image = models.ImageField(upload_to='company/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
-
-    def __str__(self):
-        return self.name
-
-    def get_image(self):
-        if self.image:
-            return f'{settings.MEDIA_URL}{self.image}'
-        return f'{settings.STATIC_URL}img/empty.png'
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['image'] = self.get_image()
-        return item
-
-    class Meta:
-        verbose_name = 'Compañia'
-        verbose_name_plural = 'Compañias'
-        default_permissions = ()
-        permissions = (
-            ('change_company', 'Can change Company'),
-        )
-        ordering = ['id']
-
 
 
 class Company(models.Model):

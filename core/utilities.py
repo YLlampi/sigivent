@@ -8,20 +8,20 @@ from core.user.models import User
 
 user = User()
 user.username = 'admin'
-user.first_name = 'William Jair'
-user.last_name = 'Dávila Vargas'
-user.email = 'williamjair94@hotmail.com'
-user.set_password('admin123')
+user.first_name = ''
+user.last_name = ''
+user.email = ''
+user.set_password('admin')
 user.is_superuser = True
 user.save()
 print('Usuario creado correctamente')
 
 company = Company()
-company.name = 'APOLO S.A.'
-company.ruc = '0928363212121'
-company.address = 'Milagro, Ecuador'
-company.mobile = '0979014552'
-company.website = 'https://algorisoft.com'
+company.name = 'Tiendeo'
+company.ruc = '9876543211'
+company.address = 'Cercado, Arequipa'
+company.mobile = '98765432'
+company.website = 'https://tiendeo.com.pe'
 company.save()
 print('Compañia creado correctamente')
 

@@ -1,98 +1,111 @@
 {% load static %}
-<aside class="main-sidebar sidebar-light-primary elevation-1">
+
+<style>
+    .user-panel{background-color:rgba(0,0,0,.03);border-radius:.3rem;border-bottom:none!important}.nav-header{font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;padding-top:1rem}.nav-sidebar .nav-link{transition:background-color .2s ease-in-out,padding-left .2s ease-in-out}.nav-sidebar .nav-link:hover p,.nav-sidebar .nav-link:hover i{transform:scale(1.02)}.nav-sidebar>.nav-item:hover>.nav-link{background-color:rgba(0,123,255,.05);padding-left:1.2rem}.sidebar::-webkit-scrollbar{width:6px}.sidebar::-webkit-scrollbar-thumb{background:#ced4da;border-radius:10px}.sidebar::-webkit-scrollbar-thumb:hover{background:#adb5bd}
+</style>
+
+<aside class="main-sidebar sidebar-light-primary elevation-2">
     <a href="{% url 'dashboard' %}" class="brand-link">
-        <img src="{% static 'img/logo.png' %}"
-             alt="AdminLTE Logo"
-             class="brand-image img-circle"
-             style="opacity: .8">
-        <span class="brand-text font-weight-bold">Apolo V.4.0</span>
+        <img src="{% static 'img/logo.png' %}" alt="Logo" class="brand-image img-circle elevation-1" style="opacity: .9">
+        <span class="brand-text font-weight-bold">Sigivent</span>
     </a>
+
     <div class="sidebar">
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
             <div class="image">
-                <img src="{{ request.user.get_image }}" class="img-circle" alt="User Image">
+                <img src="{{ request.user.get_image }}" class="img-circle elevation-1" alt="User Image">
             </div>
             <div class="info">
-                <a class="d-block">{{ request.user.get_short_name }}</a>
+                <a class="d-block font-weight-bold">{{ request.user.get_short_name }}</a>
+                <small class="text-muted d-block">Administrador</small>
             </div>
         </div>
+
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-header">Mantenimientos</li>
-                                <li class="nav-item">
-                    <a href="{% url 'company_update' %}" class="nav-link">
-                        <i class="nav-icon fas fa-building"></i>
-                        <p>
-                            Compañia
-                        </p>
+            <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
+                
+                <li class="nav-header">MENÚ PRINCIPAL</li>
+                
+                <li class="nav-item">
+                    <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>Dashboard</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{% url 'company_update' %}" class="nav-link">
-                        <i class="nav-icon fas fa-building"></i>
-                        <p>
-                            Compañia
-                        </p>
+                    <a href="{% url 'sale_list' %}" class="nav-link {% if request.resolver_match.url_name == 'sale_list' %}active{% endif %}">
+                        <i class="nav-icon fas fa-cash-register"></i>
+                        <p>Realizar Venta</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{% url 'category_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-truck-loading"></i>
+                
+                {% with gestion_urls='product_list category_list client_list' %}
+                <li class="nav-item has-treeview {% if request.resolver_match.url_name in gestion_urls %}menu-open{% endif %}">
+                    <a href="#" class="nav-link {% if request.resolver_match.url_name in gestion_urls %}active{% endif %}">
+                        <i class="nav-icon fas fa-cogs"></i>
                         <p>
-                            Categorías
+                            Gestión
+                            <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'product_list' %}" class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
+                                <i class="fas fa-boxes nav-icon"></i>
+                                <p>Productos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'category_list' %}" class="nav-link {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}">
+                                <i class="fas fa-tags nav-icon"></i>
+                                <p>Categorías</p>
+                            </a>
+                        </li>
+                         <li class="nav-item">
+                            <a href="{% url 'client_list' %}" class="nav-link {% if request.resolver_match.url_name == 'client_list' %}active{% endif %}">
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>Clientes</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="{% url 'product_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-boxes"></i>
+                {% endwith %}
+                
+                 {% with admin_urls='user_list company_update' %}
+                <li class="nav-item has-treeview {% if request.resolver_match.url_name in admin_urls %}menu-open{% endif %}">
+                    <a href="#" class="nav-link {% if request.resolver_match.url_name in admin_urls %}active{% endif %}">
+                        <i class="nav-icon fas fa-shield-alt"></i>
                         <p>
-                            Productos
+                            Administración
+                            <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'user_list' %}" class="nav-link {% if request.resolver_match.url_name == 'user_list' %}active{% endif %}">
+                                <i class="fas fa-user-cog nav-icon"></i>
+                                <p>Usuarios</p>
+                            </a>
+                        </li>
+                         <li class="nav-item">
+                            <a href="{% url 'company_update' %}" class="nav-link {% if request.resolver_match.url_name == 'company_update' %}active{% endif %}">
+                                <i class="fas fa-building nav-icon"></i>
+                                <p>Datos de la Tienda</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+                {% endwith %}
+
+                <li class="nav-header">REPORTES</li>
                 <li class="nav-item">
-                    <a href="{% url 'client_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            Clientes
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'sale_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-shopping-cart"></i>
-                        <p>
-                            Ventas
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'sale_report' %}" class="nav-link">
-                        <i class="nav-icon fas fa-chart-bar"></i>
-                        <p>
-                            Reporte de Ventas
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'user_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-user-friends"></i>
-                        <p>
-                            Usuarios
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'access_users_list' %}" class="nav-link">
-                        <i class="fas fa-user-clock"></i>
-                        <p>
-                            Control de Accesos
-                        </p>
+                    <a href="{% url 'sale_report' %}" class="nav-link {% if request.resolver_match.url_name == 'sale_report' %}active{% endif %}">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                        <p>Reporte de Ventas</p>
                     </a>
                 </li>
             </ul>
         </nav>
-    </div>
-</aside>
+        </div>
+    </aside>

@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+-q801b67uu&j)5jt*tc)7d#58^(r2pvacn=mxm12khm^)1p2u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = db.SQLITE
+DATABASES = db.POSTGRESQL
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -114,9 +114,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'es-ec'
+LANGUAGE_CODE = 'es-pe'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
@@ -133,22 +133,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 LOGIN_REDIRECT_URL = '/pos/dashboard/'
 
 LOGOUT_REDIRECT_URL = '/login/'
 
 LOGIN_URL = '/login/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-
-MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'user.User'
 
@@ -176,3 +170,10 @@ REST_FRAMEWORK = {
 DOMAIN = ''
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+
+try:
+    # Importar la configuración de desarrollo.
+    from .settings_dev import *
+except ModuleNotFoundError:
+    # Ignorar el error si el archivo no se encuentra.
+    pass
