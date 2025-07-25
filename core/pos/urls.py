@@ -5,6 +5,7 @@ from core.pos.views.company.views import CompanyUpdateView
 from core.pos.views.dashboard.views import *
 from core.pos.views.product.views import *
 from core.pos.views.sale.views import *
+from .export_csv import export_sales_csv
 
 urlpatterns = [
     # dashboard
@@ -32,4 +33,6 @@ urlpatterns = [
     path('sale/invoice/pdf/<int:pk>/', SaleInvoicePdfView.as_view(), name='sale_invoice_pdf'),
     # company
     path('company/update/', CompanyUpdateView.as_view(), name='company_update'),
+    # prediction
+    path('export/sales/', export_sales_csv, name='export_sales_csv'),
 ]

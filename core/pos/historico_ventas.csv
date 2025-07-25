@@ -1,0 +1,14 @@
+fecha_venta,id_producto,nombre_producto,id_categoria,nombre_categoria,cantidad_vendida,precio_unitario,subtotal_linea
+2023-05-13,4,Libro Poesía Completa César Vallejo,6,Libros,2,69.00,138.00
+2023-05-13,39,Teclado Bluetooth Logitech Pop Keys Negro/Amarillo,4,Tecnología,1,469.90,469.90
+2025-06-12,15,Juego de Ollas Piaccere Acero Inoxidable 9pz - Record,1,Cocina,2,1799.90,3599.80
+2025-07-02,1,Paquete Dragon Ball Universal x50,6,Libros,5,135.00,675.00
+2025-07-18,8,Un Mundo Para Julius,6,Libros,2,59.00,118.00
+2025-07-18,4,Libro Poesía Completa César Vallejo,6,Libros,1,69.00,69.00
+2025-07-18,6,Marcadores Escritores Peruanos,6,Libros,1,25.00,25.00
+2025-07-18,12,Espatula De Silicona 3.6 CM PRESS,1,Cocina,2,11.60,23.20
+2025-07-18,63,Kombo Rancho ( KR + Papi Ricas C/ Mayonesa),9,Bebidas,15,2.00,30.00
+2025-07-18,64,Figura Distortus Rex Jurassic World Rebirth,2,Juguetes,2,150.07,300.14
+2025-07-18,2,Libro Los Genios de Jaime Bayly,6,Libros,2,79.00,158.00
+2025-07-25,2,Libro Los Genios de Jaime Bayly,6,Libros,2,79.00,158.00
+2025-07-25,2,Libro Los Genios de Jaime Bayly,6,Libros,4,79.00,316.00
